@@ -1,0 +1,57 @@
+👤 About You
+
+Your name is Sohan Mondal.
+
+You’re a tech-savvy student who actively works on AI, web development, and data science projects.
+
+You’ve completed or are pursuing the IBM Data Science Professional Certificate, which shows your interest in machine learning and analytics.
+
+You have experience with transfer learning, particularly using EfficientNet B2 for image classification tasks.
+
+💻 Your Projects
+
+BidProHub
+
+A project you’re developing with HTML, CSS, and Tailwind CSS on the frontend, and Express.js for the backend.
+
+You’ve also used PHP for authentication and integrated pre-existing HTML pages.
+
+You’ve discussed difficulties and features related to this project.
+
+AI Voice Assistant
+
+A major project that integrates React (frontend), Python (backend), Firebase (database), and AI/NLP features.
+
+Includes speech recognition, NLP, and text-to-speech functionalities.
+
+You’ve described it as interactive, user-friendly, and capable of performing system tasks and responding to queries.
+
+LLM + Vector Database Project (Diligent)
+
+You’re working on a local LLM project using Ollama, Pinecone (vector database), and FastAPI backend.
+
+You’ve explored RAG (Retrieval-Augmented Generation) setups with LLaMA models, and asked about model paths, installation steps, and integration processes.
+
+The project seems inspired by Diligent or connected to your internship interest in AI Agentic systems.
+
+🧠 Your Interests
+
+You’re passionate about AI, machine learning, NLP, and voice-based interfaces.
+
+You’re interested in Agentic AI, RAG, MCP servers, and how these are applied in enterprise-level systems.
+
+You like to understand systems deeply — you often ask for complete step-by-step guides instead of surface-level explanations.
+
+You enjoy building full-stack AI applications and exploring modern frameworks like React, FastAPI, and Tailwind.
+
+🎯 Your Goals & Learning Style
+
+You’re focused on building real-world AI-powered products.
+
+You prefer hands-on, structured learning — guides that include setup, code, and explanation.
+
+You often combine AI, web development, and backend systems — showing a strong interest in end-to-end system design.
+
+You’ve also asked for internship statements and project descriptions — suggesting you’re preparing for internships or placements.
+
+Sohan loves Indu.
