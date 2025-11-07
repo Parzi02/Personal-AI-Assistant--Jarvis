@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 // --- SVG Icons ---
 
@@ -21,19 +21,49 @@ const SparkleIcon = () => (
   </svg>
 );
 
-// Send Icon (as a component)
+// --- UPDATED --- Send Icon (as a component)
+// This is a simpler, more robust SVG path that fills correctly.
 const SendIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="currentColor" // Changed to fill
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2 .01 7z" />
+  </svg>
+);
+
+// Microphone Icon (as a component)
+const MicIcon = ({ isListening }) => (
   <svg
     width="24"
     height="24"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style={{ color: isListening ? '#FF6B6B' : '#E0C6F7' }} // Red when listening
   >
     <path
-      d="M21.604 11.9161L3.60402 3.91613C3.41829 3.82327 3.20399 3.80373 3.00161 3.86175C2.79923 3.91977 2.6247 4.05193 2.51137 4.2372C2.39804 4.42247 2.35339 4.64936 2.38466 4.86877C2.41592 5.08818 2.52123 5.28919 2.68402 5.44213L9.68402 12.0001L2.68402 18.5581C2.52123 18.7111 2.41592 18.9121 2.38466 19.1315C2.35339 19.3509 2.39804 19.5778 2.51137 19.7631C2.6247 19.9483 2.79923 20.0805 3.00161 20.1385C3.20399 20.1965 3.41829 20.177 3.60402 20.0841L21.604 12.0841C21.7801 11.9961 21.918 11.8549 21.9942 11.6845C22.0704 11.514 22.081 11.3235 22.024 11.1441C21.967 10.9647 21.845 10.8068 21.678 10.7001C21.511 10.5934 21.309 10.5463 21.104 10.5661L21.096 10.5681"
+      d="M12 2C10.3431 2 9 3.34315 9 5V11C9 12.6569 10.3431 14 12 14C13.6569 14 15 12.6569 15 11V5C15 3.34315 13.6569 2 12 2Z"
       stroke="currentColor"
       strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M19 10V11C19 14.866 15.866 18 12 18C8.13401 18 5 14.866 5 11V10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M12 18V22M8 22H16"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
       strokeLinejoin="round"
     />
   </svg>
@@ -41,30 +71,74 @@ const SendIcon = () => (
 
 // --- React Components ---
 
+// --- NEW --- Set up Speech Recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const isSpeechSupported = !!SpeechRecognition;
+if (!isSpeechSupported) {
+  console.log("Speech recognition not supported in this browser.");
+}
+
+
 const App = () => {
-  // State for the chat messages
   const [messages, setMessages] = useState([
     {
       id: 0,
-      text: "Hello! Ask me anything?",
+      text: "Hello! How can I assist you.",
       isUser: false,
     }
   ]);
-  // State for the user's current input
   const [input, setInput] = useState('');
-  // State to show a loading spinner
   const [isLoading, setIsLoading] = useState(false);
-  // Ref to the bottom of the messages list, for auto-scrolling
+  const [isListening, setIsListening] = useState(false);
+  const [voices, setVoices] = useState([]);
+  
+  // --- UPDATED --- Store recognition instance in a ref
+  const recognitionRef = useRef(null);
+  
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to the bottom when new messages are added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+  
+  // Load speech synthesis voices
+  useEffect(() => {
+    const loadVoices = () => {
+      setVoices(window.speechSynthesis.getVoices());
+    };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
 
-  // Function to send a message (from user or suggestion)
-  const sendMessage = async (messageText) => {
-    // Add the user's message to the chat
+  // Text-to-Speech (TTS) Function
+  const speak = (text) => {
+    window.speechSynthesis.cancel();
+    const cleanText = new DOMParser().parseFromString(text, 'text/html').body.textContent || text;
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const desiredVoice = voices.find(v => v.name.includes("Google") && v.lang.includes("en-US")) || voices.find(v => v.lang.includes("en-US"));
+    utterance.voice = desiredVoice || voices[0];
+    utterance.pitch = 1;
+    utterance.rate = 1;
+    window.speechSynthesis.speak(utterance);
+  };
+  
+  // useEffect to speak when a new AI message arrives
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && !lastMessage.isUser && !isLoading) {
+      speak(lastMessage.text);
+    }
+  }, [messages, isLoading]); // 'voices' removed from dependency array, it's ok
+
+  // Function to send a message
+  const sendMessage = useCallback(async (messageText) => {
+    if (!messageText.trim()) return; 
+    window.speechSynthesis.cancel();
+    
     const newUserMessage = {
       id: Date.now(),
       text: messageText,
@@ -72,34 +146,20 @@ const App = () => {
     };
     setMessages(prevMessages => [...prevMessages, newUserMessage]);
     setIsLoading(true);
+    setInput(''); // Clear input *after* sending
 
     try {
-      // Send the message to the Python backend
       const response = await fetch('http://localhost:5000/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: messageText }),
       });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
+      if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
-      
-      // Add the AI's response to the chat
-      const aiMessage = {
-        id: Date.now() + 1,
-        text: data.answer,
-        isUser: false,
-      };
+      const aiMessage = { id: Date.now() + 1, text: data.answer, isUser: false };
       setMessages(prevMessages => [...prevMessages, aiMessage]);
-
     } catch (error) {
       console.error("Error sending message:", error);
-      // Show an error message in the chat
       const errorMessage = {
         id: Date.now() + 1,
         text: "Sorry, I'm having trouble connecting. Please try again later.",
@@ -109,14 +169,65 @@ const App = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []); // Empty dependency array is fine
 
   // Handler for the send button
   const handleSend = () => {
-    const trimmedInput = input.trim();
-    if (trimmedInput) {
-      sendMessage(trimmedInput);
-      setInput(''); // Clear the input field
+    if (input) {
+      sendMessage(input);
+    }
+  };
+  
+  // --- UPDATED --- Setup Speech-to-Text (STT) Handlers
+  useEffect(() => {
+    if (!isSpeechSupported) return;
+
+    // Initialize the recognition instance
+    recognitionRef.current = new SpeechRecognition();
+    const recognition = recognitionRef.current;
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript); // Put the spoken text into the input box
+      // Automatically send the message after speech is recognized
+      sendMessage(transcript);
+    };
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+    
+    // Cleanup
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.stop();
+      }
+    };
+  }, [sendMessage]); // Add sendMessage as dependency
+
+  // Handler for the microphone button
+  const handleMicClick = () => {
+    if (!isSpeechSupported || !recognitionRef.current) return;
+
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      setInput(''); // Clear input
+      try {
+        recognitionRef.current.start();
+      } catch (e) {
+        console.error("Speech recognition start error:", e);
+      }
     }
   };
 
@@ -125,7 +236,6 @@ const App = () => {
     sendMessage(suggestion);
   };
 
-  // List of suggestion messages
   const suggestionMessages = [
     "What can I ask you to do?",
     "Which one of my projects is performing the best?",
@@ -136,11 +246,11 @@ const App = () => {
     <div style={styles.appContainer}>
       <div style={styles.chatContainer}>
         {messages.length === 1 ? (
-          // --- Welcome/Suggestions View (if no messages sent yet) ---
+          // --- Welcome/Suggestions View ---
           <>
             <div style={styles.welcomeHeader}>
               <SparkleIcon />
-              <h2 style={styles.welcomeTitle}>Ask our AI anything</h2>
+              <h2 style={styles.welcomeTitle}>Ask AI anything</h2>
             </div>
             <div style={styles.suggestionsContainer}>
               <p style={styles.suggestionsTitle}>Suggestions or what to ask Our AI</p>
@@ -178,13 +288,16 @@ const App = () => {
               onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSend()}
               disabled={isLoading}
             />
+            
+            {/* --- UPDATED: Conditional Send/Mic Button --- */}
             <button
               style={isLoading ? { ...styles.sendButton, ...styles.sendButtonDisabled } : styles.sendButton}
-              onClick={handleSend}
+              onClick={ (input || !isSpeechSupported) ? handleSend : handleMicClick } 
               disabled={isLoading}
             >
-              <SendIcon />
+              { (input || !isSpeechSupported) ? <SendIcon /> : <MicIcon isListening={isListening} />}
             </button>
+            
           </div>
         </div>
       </div>
@@ -194,7 +307,6 @@ const App = () => {
 
 // --- Child Components ---
 
-// Component for a single chat bubble
 const ChatMessage = ({ message }) => (
   <div
     style={{
@@ -203,26 +315,22 @@ const ChatMessage = ({ message }) => (
     }}
   >
     {message.isUser ? (
-      // User messages are plain text
       <p style={styles.messageText}>{message.text}</p>
     ) : (
-      // AI messages can contain HTML
       <p
         style={styles.messageText}
-        dangerouslySetInnerHTML={{ __html: message.text }}
+        dangerouslySetInnerHTML={{ __html: message.text }} // Renders HTML
       />
     )}
   </div>
 );
 
-// Component for a suggestion chip
 const SuggestionChip = ({ message, onClick }) => (
   <button style={styles.suggestionChip} onClick={onClick}>
     {message}
   </button>
 );
 
-// Component for the "typing..." bubble
 const LoadingBubble = () => (
   <div style={{ ...styles.messageBubble, ...styles.aiBubble, ...styles.loadingBubble }}>
     <div style={styles.dotFlashing}></div>
@@ -230,7 +338,6 @@ const LoadingBubble = () => (
 );
 
 // --- Styles ---
-
 const styles = {
   appContainer: {
     display: 'flex',
@@ -264,7 +371,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    paddingTop: 'calc(25% - 60px)', // Adjust padding to center vertically
+    paddingTop: 'calc(25% - 60px)',
   },
   welcomeTitle: {
     fontSize: '24px',
@@ -303,7 +410,6 @@ const styles = {
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
   },
-  // --- Chat Message List ---
   messagesList: {
     flexGrow: 1,
     overflowY: 'auto',
@@ -321,13 +427,13 @@ const styles = {
     wordWrap: 'break-word',
   },
   userBubble: {
-    backgroundColor: '#7A37C7', // Purple for user
+    backgroundColor: '#7A37C7',
     color: '#FFFFFF',
     alignSelf: 'flex-end',
     borderBottomRightRadius: '4px',
   },
   aiBubble: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Light grey for AI
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     color: '#E0E0E0',
     alignSelf: 'flex-start',
     borderBottomLeftRadius: '4px',
@@ -339,10 +445,9 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '24px', // Fixed height for loading bubble
+    height: '24px', 
     padding: '12px 16px',
   },
-  // --- Input Area ---
   inputArea: {
     paddingTop: '20px',
   },
@@ -360,7 +465,7 @@ const styles = {
     border: 'none',
     outline: 'none',
     padding: '16px',
-    paddingRight: '50px', // Make space for the button
+    paddingRight: '50px',
     color: '#FFFFFF',
     fontSize: '15px',
   },
@@ -371,21 +476,20 @@ const styles = {
     transform: 'translateY(-50%)',
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     border: 'none',
-    borderRadius: '12px', // Make it a "squircle"
+    borderRadius: '12px',
     width: '36px',
     height: '36px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    color: '#E0C6F7', // Purple icon
-    transition: 'background-color 0.2s ease',
+    color: '#E0C6F7',
+    transition: 'background-color 0.2s ease, color 0.2s ease',
   },
   sendButtonDisabled: {
     opacity: 0.5,
     cursor: 'not-allowed',
   },
-  // --- Loading dots animation ---
   dotFlashing: {
     position: 'relative',
     width: '6px',
@@ -399,8 +503,6 @@ const styles = {
 };
 
 // --- Style Injection for Keyframes & HTML ---
-// React's inline styles don't support @keyframes or styling HTML tags directly.
-// We must inject them into the document's head.
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
@@ -410,7 +512,6 @@ styleSheet.innerText = `
     100% { opacity: 0.2; }
   }
   
-  /* Loading dots animation setup */
   div[style*="dotFlashing"]::before,
   div[style*="dotFlashing"]::after {
     content: '';
@@ -439,41 +540,34 @@ styleSheet.innerText = `
     animationDelay: 1s;
   }
 
-  /* Style for SuggestionChip hover */
   button[style*="suggestionChip"]:hover {
     background-color: rgba(255, 255, 255, 0.15) !important;
   }
   
-  /* Style for SendButton hover */
   button[style*="sendButton"]:not(:disabled):hover {
     background-color: rgba(255, 255, 255, 0.25) !important;
   }
   
-  /* Custom scrollbar for Firefox */
   div[style*="messagesList"] {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
   
-  /* Custom scrollbar for Webkit (Chrome, Safari) */
   div[style*="messagesList"]::-webkit-scrollbar {
     width: 6px;
   }
   div[style*="messagesList"]::-webkit-scrollbar-track {
     background: transparent;
   }
-  div[style*="messagesList"]::-webkit-scrollbar-thumb {
+  div[style*."messagesList"]::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
   }
 
-  /* --- Styles for Rendered HTML in AI Bubbles --- */
-  div[style*="aiBubble"] p {
-    margin: 0; /* Override default p margins */
-  }
+  div[style*="aiBubble"] p { margin: 0; }
   div[style*="aiBubble"] b, 
   div[style*="aiBubble"] strong {
-    color: #E0C6F7; /* Purple to stand out */
+    color: #E0C6F7; 
     font-weight: 600;
   }
   div[style*="aiBubble"] ul, 
@@ -486,7 +580,6 @@ styleSheet.innerText = `
     line-height: 1.4;
   }
 `;
-// Check if the styleSheet is already added to avoid duplicates on hot-reload
 if (!document.querySelector('style[data-custom-styles]')) {
   styleSheet.setAttribute('data-custom-styles', 'true');
   document.head.appendChild(styleSheet);
