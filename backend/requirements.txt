@@ -7,4 +7,5 @@ fastapi
 uvicorn[standard] 
 langchain-experimental
 python-dotenv
-
+pypdf
+docx2txt

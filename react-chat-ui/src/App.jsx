@@ -46,7 +46,7 @@ const App = () => {
   const [messages, setMessages] = useState([
     {
       id: 0,
-      text: "Hello! Ask me anything about your projects.",
+      text: "Hello! Ask me anything?",
       isUser: false,
     }
   ]);
