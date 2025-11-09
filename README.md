@@ -15,6 +15,7 @@ A personal AI assistant designed to understand and execute complex tasks through
     * [Configuration](#configuration)
 * [Usage](#usage)
 * [Output](#output)
+* [Output](#output)
 
 ## Key Features
 
@@ -136,7 +137,7 @@ You will need to run the backend and frontend in separate terminal windows.
     ```
     The application will be accessible at `http://localhost:5173`.
 
-##Output
+## Output
 
 
 ---
