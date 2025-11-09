@@ -15,7 +15,6 @@ A personal AI assistant designed to understand and execute complex tasks through
     * [Configuration](#configuration)
 * [Usage](#usage)
 * [Output](#output)
-* [Output](#output)
 
 ## Key Features
 
