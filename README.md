@@ -1,151 +1,144 @@
-Build Your Own Jarvis: A "Smart" AI Assistant
-
-Note: Create a GIF of your app named jarvis_demo.gif and place it in the root of your project to have it display here.
-
-This project is a complete, step-by-step guide to building your own "Jarvis" style AI assistant.
-
-This isn't just a simple chatbot. It's a powerful, voice-enabled AI agent that can:
-
-Read Your Documents: Answer questions about your personal PDFs, DOCX, and TXT files using Retrieval-Augmented Generation (RAG).
-
-Browse the Web: Get real-time answers about news, sports, tech, and more using a live web search tool.
-
-Use Your Voice: Be controlled entirely by voice (Speech-to-Text) and speak its answers back to you (Text-to-Speech).
-
-Run Locally: Uses the powerful and free Ollama and Llama 3 to run the "brain" on your own machine.
-
-✨ Key Features
-
-🧠 Conversational Memory: Remembers the context of your chat to have a natural, flowing conversation.
-
-📂 RAG on Custom Data: "Teaches" the AI by feeding it your own files via the ingest.py script.
-
-🌐 Live Web Search: Uses Tavily AI to answer questions about current events (e.g., "Who won the F1 race?" or "Latest tech news").
-
-🗣️ Voice-to-Voice Interaction: Click the mic to talk, and listen for the AI's spoken response.
-
-🚀 Modern Tech Stack: Built with a blazing-fast Python (FastAPI) backend and a sleek React frontend.
-
-🔒 Self-Hosted & Private: The core LLM (Ollama) runs on your machine, so your conversations and documents remain private.
-
-🛠️ Tech Stack & Architecture
-
-This project is built with a modern, agentic architecture.
-
-Technologies Used
-
-<p align="center">
-<!-- Frontend -->
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/React-20232A%3Fstyle%3Dfor-the-badge%26logo%3Dreact%26logoColor%3D61DAFB" alt="React" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/HTML5-E34F26%3Fstyle%3Dfor-the-badge%26logo%3Dhtml5%26logoColor%3Dwhite" alt="HTML5" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/CSS3-1572B6%3Fstyle%3Dfor-the-badge%26logo%3Dcss3%26logoColor%3Dwhite" alt="CSS3" />
-<!-- Backend -->
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Python-3776AB%3Fstyle%3Dfor-the-badge%26logo%3Dpython%26logoColor%3Dwhite" alt="Python" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/FastAPI-009688%3Fstyle%3Dfor-the-badge%26logo%3Dfastapi%26logoColor%3Dwhite" alt="FastAPI" />
-<!-- AI & Data -->
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/LangChain-008a2b%3Fstyle%3Dfor-the-badge%26logo%3Dlangchain%26logoColor%3Dwhite" alt="LangChain" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Ollama-000000%3Fstyle%3Dfor-the-badge%26logo%3Dollama%26logoColor%3Dwhite" alt="Ollama" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Pinecone-008a2b%3Fstyle%3Dfor-the-badge%26logo%3Dpinecone%26logoColor%3Dwhite" alt="Pinecone" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Tavily AI-000000?style=for-the-badge&logo=other&logoColor=white" alt="Tavily AI" />
-</p>
-
-How It Works
-
-This project uses a "tool-calling agent." When you send a message, the agent (powered by Llama 3) decides which tool to use.
-
-graph TD
-    A[React UI (with Voice)] <--> B(FastAPI Backend);
-    B --> C{LangChain Agent};
-    C -- "Needs Doc Info?" --> D[Document Retriever (Pinecone)];
-    C -- "Needs Web Info?" --> E[Web Search (Tavily)];
-    D --> F[Ollama (Llama 3)];
-    E --> F;
-    F -- "Final Answer" --> C;
-    C --> B;
-    B --> A;
+# Jarvis: Your Personal AI Assistant
 
 
-🚀 Getting Started
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https) 
+A personal AI assistant designed to understand and execute complex tasks through a natural language interface. This project integrates cutting-edge AI models with local services to provide a seamless, conversational user experience.
 
-Follow these steps to get your own Jarvis assistant running.
+## Contents
 
-1. Prerequisites
+* [Key Features](#key-features)
+* [Tech Stack](#tech-stack)
+* [Architecture](#architecture)
+* [Getting Started](#getting-started)
+    * [Prerequisites](#prerequisites)
+    * [Installation](#installation)
+    * [Configuration](#configuration)
+* [Usage](#usage)
+* [Output](#output)
 
-You'll need a few accounts and one local app.
+## Key Features
 
-Ollama: Download and install Ollama.
+* **Conversational AI:** Powered by  Ollama for natural, context-aware dialogue.
+* **Voice Interface:** Real-time text-to-speech for hassle-free of reading.
+* **Vector Search:** Utilizes Pinecone to store and retrieve long-term memories or documents.
+* **Task Execution:** Can run local scripts and fetch stored information.
+* **Web Dashboard:** A React-based interface for visualizing conversations, and managing settings.
 
-Pinecone: Sign up for a free account to get your API key and index name.
+## Tech Stack
 
-Tavily AI: Sign up for a free account to get your API key.
+This project is built with a modern, decoupled architecture.
 
-Once Ollama is installed, run these commands in your terminal to download the models:
+* **Frontend:** React, Vite, TypeScript, Tailwind CSS
+* **Backend:** Python (FastAPI), Node.js (Express)
+* **AI / LLM:** Ollama (Llama 3)
+* **Vector Database:** Pinecone
+* **Audio Processing:** Web Speech API
 
-ollama pull llama3
-ollama pull nomic-embed-text
+## Architecture
 
-
-2. Backend Setup
-
-This terminal will run the Python "brain" of your AI.
-
-# Clone this repository (or download the files)
-git clone <your-repo-url>
-cd <your-repo-folder>/python-backend
-
-# Create a virtual environment
-python -m venv venv
-
-# Activate it
-# Windows
-.\venv\Scripts\activate
-# Mac/Linux
-source venv/bin/activate
-
-# Install all required libraries
-pip install -r requirements.txt
-
-# IMPORTANT: Edit the .env file
-# Add your API keys from Pinecone and Tavily
-nano .env 
+* **Frontend (UI):** Captures user input (text/voice) and displays responses.
+* **Backend (API):** Handles business logic, processes requests, and orchestrates AI services.
+* **AI Core:** Transcribes input, generates LLM responses, and converts text back to speech.
+* **Memory (Vector DB):** Provides long-term context to the LLM.
 
 
-3. Data Ingestion (Teach Your AI)
 
-"Ingest" your custom files to make them searchable.
+---
 
-Add your files (.pdf, .docx, .txt) into the python-backend/data/ folder.
+## Getting Started
 
-Run the ingestion script:
+Follow these instructions to get a copy of the project up and running on your local machine.
 
-python ingest.py
+### Prerequisites
+
+* Python 3.10+
+* Node.js 18.0+
+* Local LLM Ollama (Llama 3)
+* Git
+
+### Installation
+
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/Parzi02/Personal-AI-Assistant--Jarvis.git
+    cd Personal-AI-Assistant--Jarvis
+    ```
+
+2.  **Setup Backend (Python):**
+    ```sh
+    cd backend
+    
+    # Create a virtual environment
+    python -m venv venv
+    
+    # Activate the environment
+    # On Windows:
+    .\venv\Scripts\activate
+    # On-Mac/Linux:
+    source venv/bin/activate
+    
+    # Install Python dependencies
+    pip install -r requirements.txt
+    ```
+
+3.  **Setup Frontend (React):**
+    ```sh
+    cd ../frontend
+    
+    # Install Node.js dependencies
+    npm install
+    ```
+
+### Configuration
+
+You must set up your environment variables before running the application.
+
+1.  Navigate to the `backend` directory.
+2.  Create a `.env` file by copying the example:
+    
+3.  Open the `.env` file and fill in the required values:
+    ```.env
+    # Example .env file
+    
+    
+    # Vector DB Configuration
+    PINECONE_API_KEY="your_pinecone_api_key"
+    PINECONE_ENVIRONMENT="your_pinecone_env"
+    PINECONE_INDEX_NAME="jarvis-memory"
+    
+    # (Add other keys as needed)
+    ```
+
+---
+
+## Usage
+
+You will need to run the backend and frontend in separate terminal windows.
+
+1.  **Run the Backend (API):**
+    * Open a terminal, navigate to the `backend` directory, and activate your virtual environment.
+    ```sh
+    cd backend
+    .\venv\Scripts\activate
+    
+    # Start the FastAPI server
+     uvicorn server:app --reload --port 5000
+    ```
+    The API will be running at `http://localhost:5000`.
+
+2.  **Run the Frontend (UI):**
+    * Open a *second* terminal and navigate to the `frontend` directory.
+    ```sh
+    cd frontend
+    
+    # Start the React development server
+    npm run dev
+    ```
+    The application will be accessible at `http://localhost:5173`.
+
+## Output
 
 
-4. Frontend Setup
+---
 
-This terminal will run the React chat interface.
-
-# In a NEW terminal, navigate to the frontend folder
-cd <your-repo-folder>/react-chat-ui
-
-# Install the React app's dependencies
-npm install
-
-
-💻 How to Run
-
-You must have both the backend and frontend running at the same time.
-
-Terminal 1: Start the Backend
-
-# In your python-backend folder (with venv active)
-uvicorn server:app --reload --port 5000
-
-
-Terminal 2: Start the Frontend
-
-# In your react-chat-ui folder
-npm start
-
-
-Your browser will automatically open to http://localhost:3000. Remember to grant microphone permissions to use the voice features!
+Sohan Kumar Mondal &copy; 2025
