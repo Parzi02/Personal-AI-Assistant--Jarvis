@@ -137,8 +137,9 @@ You will need to run the backend and frontend in separate terminal windows.
     The application will be accessible at `http://localhost:5173`.
 
 ## Output
-
-
+[DEMO](./assets/DEMO-1.png)
+[File Structure](./assets/file_structure.png)
+[Ai-personal-assistant](./assets/Ai-personal-assistant.mp4)
 ---
 
 Sohan Kumar Mondal &copy; 2025
