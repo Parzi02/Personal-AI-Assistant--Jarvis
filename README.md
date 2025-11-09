@@ -137,14 +137,17 @@ You will need to run the backend and frontend in separate terminal windows.
     The application will be accessible at `http://localhost:5173`.
 
 ## Output
+Demo
 ![DEMO](./assets/DEMO-1.png)
 
+File Structure
 ![File Structure](./assets/File_structure.png)
 
-![Ai-personal-assistant](./assets/Ai-personal-assistant.mp4)
 
 
-https://github.com/user-attachments/assets/03e1adef-425d-4b95-8ea1-2458f8b0baf2
+AI-personal-assistant demo
+
+https://github.com/user-attachments/assets/7b3754c1-bc0c-49dc-b334-3e0d14fc9968
 
 
 ---
