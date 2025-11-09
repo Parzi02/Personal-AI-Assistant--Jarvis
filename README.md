@@ -138,17 +138,24 @@ You will need to run the backend and frontend in separate terminal windows.
 
 ## Output
 Demo
+--sh
 ![DEMO](./assets/DEMO-1.png)
 
+--
+
 File Structure
+--sh
+
 ![File Structure](./assets/File_structure.png)
 
+--
 
 
 AI-personal-assistant demo
-
+--sh
 https://github.com/user-attachments/assets/7b3754c1-bc0c-49dc-b334-3e0d14fc9968
 
+--
 
 ---
 
