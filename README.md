@@ -14,8 +14,7 @@ A personal AI assistant designed to understand and execute complex tasks through
     * [Installation](#installation)
     * [Configuration](#configuration)
 * [Usage](#usage)
-* [Contributing](#contributing)
-* [License](#license)
+* [Output](#output)
 
 ## Key Features
 
@@ -136,6 +135,9 @@ You will need to run the backend and frontend in separate terminal windows.
     npm run dev
     ```
     The application will be accessible at `http://localhost:5173`.
+
+##Output
+
 
 ---
 
