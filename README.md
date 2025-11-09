@@ -143,6 +143,10 @@ You will need to run the backend and frontend in separate terminal windows.
 
 ![Ai-personal-assistant](./assets/Ai-personal-assistant.mp4)
 
+
+https://github.com/user-attachments/assets/03e1adef-425d-4b95-8ea1-2458f8b0baf2
+
+
 ---
 
 Sohan Kumar Mondal &copy; 2025
