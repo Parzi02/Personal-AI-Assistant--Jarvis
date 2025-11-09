@@ -1,8 +1,8 @@
 # Jarvis: Your Personal AI Assistant
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https) 
-A personal AI assistant designed to understand and execute complex tasks through a natural language interface. This project integrates cutting-edge AI models with local and web services to provide a seamless, conversational user experience.
+A personal AI assistant designed to understand and execute complex tasks through a natural language interface. This project integrates cutting-edge AI models with local services to provide a seamless, conversational user experience.
 
 ## Contents
 
@@ -19,13 +19,11 @@ A personal AI assistant designed to understand and execute complex tasks through
 
 ## Key Features
 
-* **Conversational AI:** Powered by `[Your LLM, e.g., Ollama, OpenAI]` for natural, context-aware dialogue.
-* **Voice Interface:** Real-time speech-to-text and text-to-speech for hands-free operation.
-* **Vector Search:** Utilizes `[Your Vector DB, e.g., Pinecone, ChromaDB]` to store and retrieve long-term memories or documents.
-* **Task Execution:** Can run local scripts, manage smart home devices, set reminders, and fetch real-time information.
-* **Web Dashboard:** A `[Your Frontend, e.g., React]`-based interface for visualizing conversations, and managing settings.
-* **(Add Your Feature):** e.g., "Calendar integration with Google Calendar."
-* **(Add Your Feature):** e.g., "Real-time web browsing capabilities."
+* **Conversational AI:** Powered by  Ollama for natural, context-aware dialogue.
+* **Voice Interface:** Real-time text-to-speech for hassle-free of reading.
+* **Vector Search:** Utilizes Pinecone to store and retrieve long-term memories or documents.
+* **Task Execution:** Can run local scripts and fetch stored information.
+* **Web Dashboard:** A React-based interface for visualizing conversations, and managing settings.
 
 ## Tech Stack
 
@@ -35,7 +33,7 @@ This project is built with a modern, decoupled architecture.
 * **Backend:** [e.g., Python (FastAPI / Flask), Node.js (Express)]
 * **AI / LLM:** [e.g., Ollama (Llama 3), OpenAI API (GPT-4)]
 * **Vector Database:** [e.g., Pinecone, ChromaDB, Qdrant]
-* **Audio Processing:** [e.g., Whisper.cpp, Coqui TTS]
+* **Audio Processing:** Web Speech API
 * **Database:** [e.g., PostgreSQL, SQLite] (Optional, for user data)
 
 ## Architecture
